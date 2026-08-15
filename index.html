@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVA · Evoluciona Express — Tu aliada legal</title>
+<meta name="description" content="Resuelve tus dudas de blindaje empresarial, contratos y normativa laboral con EVA, la asistente legal de Evoluciona Consultores.">
+<style>
+  :root{
+    --dark: #0B1F14;
+    --green: #4FD873;
+    --green-dim: #2E7D4F;
+    --cream: #F6F8F6;
+    --white: #FFFFFF;
+    --ink: #0B1F14;
+    --muted: #5C6E64;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background: var(--cream);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #app{
+    max-width: 480px;
+    margin: 0 auto;
+    height: 100dvh;
+    display:flex; flex-direction:column;
+    background: var(--cream);
+    box-shadow: 0 0 60px rgba(11,31,20,0.08);
+  }
+
+  /* ---------- Header ---------- */
+  .evo-header{
+    background: radial-gradient(120% 160% at 0% 0%, #163B26 0%, var(--dark) 60%);
+    color: var(--white);
+    padding: 22px 20px 18px;
+    flex-shrink:0;
+  }
+  .evo-header-top{ display:flex; align-items:center; gap:12px; }
+  .evo-shield{ width:40px; height:40px; flex-shrink:0; }
+  .evo-title strong{
+    display:block; font-size: 17px; letter-spacing:.2px; font-family: Georgia, 'Times New Roman', serif;
+  }
+  .evo-title span{ font-size: 12.5px; color: rgba(255,255,255,0.68); }
+  .evo-disclaimer{
+    margin-top:14px; font-size: 11px; line-height:1.5; color: rgba(255,255,255,0.72);
+    border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px;
+  }
+
+  /* ---------- Body / messages ---------- */
+  .evo-body{ flex:1; overflow-y:auto; padding: 18px; display:flex; flex-direction:column; gap:12px; }
+  .evo-msg{ max-width: 86%; padding: 11px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+  .evo-msg.bot{ align-self:flex-start; background: var(--white); color: var(--ink); border: 1px solid rgba(11,31,20,0.08); border-bottom-left-radius: 4px; }
+  .evo-msg.user{ align-self:flex-end; background: var(--dark); color: var(--white); border-bottom-right-radius: 4px; }
+  .evo-msg.system-note{ align-self:center; background: transparent; color: var(--muted); font-size: 11.5px; text-align:center; max-width: 100%; }
+  .evo-typing{ align-self:flex-start; display:flex; gap:4px; padding: 13px 15px; background: var(--white); border-radius: 14px; border: 1px solid rgba(11,31,20,0.08); }
+  .evo-typing span{ width:6px; height:6px; border-radius:50%; background: var(--green-dim); animation: evo-bounce 1.2s infinite ease-in-out; }
+  .evo-typing span:nth-child(2){ animation-delay: .15s; }
+  .evo-typing span:nth-child(3){ animation-delay: .3s; }
+  @keyframes evo-bounce{ 0%,60%,100%{ transform: translateY(0); opacity:.5; } 30%{ transform: translateY(-4px); opacity:1; } }
+
+  .evo-cta{ align-self:flex-start; display:inline-flex; align-items:center; gap:8px; background: var(--white); border: 1px solid var(--green-dim); color: var(--dark); border-radius: 12px; padding: 11px 15px; font-size: 13px; font-weight:600; text-decoration:none; margin-top: -4px; }
+  .evo-cta:hover{ background: #ECFBEF; }
+  .evo-cta svg{ width:17px; height:17px; }
+
+  .evo-chips{ display:flex; flex-wrap:wrap; gap:6px; padding: 0 18px 12px; flex-shrink:0; }
+  .evo-chip{ background: var(--white); border: 1px solid rgba(11,31,20,0.12); color: var(--dark); font-size: 12px; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
+  .evo-chip:hover{ border-color: var(--green-dim); }
+
+  .evo-inputbar{ display:flex; align-items:flex-end; gap:8px; padding: 12px; background: var(--white); border-top: 1px solid rgba(11,31,20,0.08); flex-shrink:0; }
+  .evo-inputbar textarea{ flex:1; resize:none; border: 1px solid rgba(11,31,20,0.15); border-radius: 12px; padding: 11px 13px; font-size: 14px; font-family: inherit; max-height: 100px; outline:none; }
+  .evo-inputbar textarea:focus{ border-color: var(--green-dim); }
+  .evo-send{ width:40px; height:40px; border-radius:10px; background: var(--dark); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .evo-send:disabled{ opacity:.4; cursor:default; }
+  .evo-send svg{ width:17px; height:17px; }
+  .evo-foot{ text-align:center; font-size: 10px; color: var(--muted); padding: 7px 12px 12px; background: var(--white); flex-shrink:0; }
+
+  /* ---------- Pre-chat gate ---------- */
+  .evo-gate{ padding: 26px 22px; display:flex; flex-direction:column; gap:11px; background: var(--white); flex:1; }
+  .evo-gate h4{ margin:0 0 2px; font-family: Georgia, serif; font-size:18px; color:var(--dark); }
+  .evo-gate p{ margin:0 0 8px; font-size:13px; color:var(--muted); line-height:1.55; }
+  .evo-gate input{ border: 1px solid rgba(11,31,20,0.15); border-radius: 10px; padding: 12px 13px; font-size: 14px; font-family: inherit; outline:none; }
+  .evo-gate input:focus{ border-color: var(--green-dim); }
+  .evo-gate-btn{ margin-top:6px; background: var(--green); color: var(--dark); border:none; border-radius:10px; padding: 13px; font-size:14px; font-weight:700; cursor:pointer; }
+  .evo-gate-btn:hover{ background:#3fc463; }
+  .evo-gate-skip{ background:none; border:none; color: var(--muted); font-size: 12px; text-decoration:underline; cursor:pointer; margin-top:-2px; }
+
+  @media (min-width: 481px){
+    body{ display:flex; align-items:center; justify-content:center; }
+    #app{ height: 88vh; max-height: 720px; border-radius: 20px; overflow:hidden; margin: 24px auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div class="evo-header">
+    <div class="evo-header-top">
+      <svg class="evo-shield" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z" fill="#4FD873"/><path d="M9 12l2 2 4-4" stroke="#0B1F14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="evo-title">
+        <strong>EVA · Evoluciona Express</strong>
+        <span>Tu aliada legal, respuestas al instante</span>
+      </div>
+    </div>
+    <div class="evo-disclaimer">
+      EVA da orientación jurídica general y no sustituye una asesoría formal. Para tu caso concreto, un abogado de Evoluciona lo revisa contigo.
+    </div>
+  </div>
+
+  <div class="evo-gate" id="evo-gate">
+    <h4>Antes de empezar</h4>
+    <p>Cuéntanos quién eres para poder darte una orientación más útil (y, si lo necesitas, que el equipo de Evoluciona te contacte).</p>
+    <input type="text" id="evo-name" placeholder="Nombre" autocomplete="name">
+    <input type="text" id="evo-company" placeholder="Empresa (opcional)">
+    <input type="tel" id="evo-whatsapp" placeholder="WhatsApp (opcional)" autocomplete="tel">
+    <button class="evo-gate-btn" id="evo-gate-start">Iniciar chat con EVA</button>
+    <button class="evo-gate-skip" id="evo-gate-skip">Prefiero no dar mis datos, solo quiero preguntar</button>
+  </div>
+
+  <div class="evo-body" id="evo-body" style="display:none;"></div>
+  <div class="evo-chips" id="evo-chips" style="display:none;">
+    <button class="evo-chip" data-q="¿Qué es el blindaje empresarial y por qué mi empresa lo necesita?">Blindaje empresarial</button>
+    <button class="evo-chip" data-q="¿Qué cambios laborales importantes hay en Colombia para 2026?">Cambios laborales 2026</button>
+    <button class="evo-chip" data-q="¿Qué debe tener un contrato empresarial para que me proteja de verdad?">Contratos que protegen</button>
+    <button class="evo-chip" data-q="Quiero agendar una asesoría con un abogado de Evoluciona">Hablar con un abogado</button>
+  </div>
+  <div class="evo-inputbar" id="evo-inputbar" style="display:none;">
+    <textarea id="evo-input" placeholder="Escribe tu consulta..." rows="1"></textarea>
+    <button class="evo-send" id="evo-send" aria-label="Enviar">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12l18-8-8 18-2-8-8-2z" fill="#4FD873"/></svg>
+    </button>
+  </div>
+  <div class="evo-foot" id="evo-foot" style="display:none;">EVA puede cometer errores. Verifica información crítica con el equipo legal.</div>
+
+</div>
+
+<script>
+(function(){
+  // =====================================================================
+  // CONFIG — edita antes de publicar
+  // =====================================================================
+  const CONFIG = {
+    // Crea un formulario nuevo en https://formspree.io y pega aquí el ID
+    FORMSPREE_ENDPOINT: "https://formspree.io/f/xgawlodr",
+    WHATSAPP_NUMBER: "573244063000", // Evoluciona Consultores
+    MAX_TURNS_BEFORE_CTA: 4
+  };
+
+  const SYSTEM_PROMPT = `Eres EVA, la asistente legal virtual de Evoluciona Consultores SAS, firma colombiana de "blindaje empresarial" (Andrea Jiménez es la abogada fundadora). Evoluciona ayuda a empresarios y pymes en Colombia con derecho societario, laboral, contractual, cumplimiento normativo y protección patrimonial. El posicionamiento de la marca es "Aliada de Empresarios".
+
+TU ROL:
+- Responder consultas jurídicas GENERALES y orientativas sobre derecho empresarial colombiano: constitución y gobierno de sociedades, contratos comerciales, cumplimiento laboral (SG-SST, reglamento interno, jornada laboral), riesgos societarios, protección patrimonial, actualizaciones normativas recientes (2025-2026), y temas relacionados con el contenido de Evoluciona (Método BLINDA, Diagnóstico de Blindaje Empresarial).
+- Tono: cercano, claro y profesional, como una aliada que resuelve dudas rápido — nunca acartonado ni con jerga innecesaria.
+- Respuestas breves: máximo 120-150 palabras, con viñetas cuando ayude a la claridad.
+
+LÍMITES IMPORTANTES:
+- SIEMPRE deja claro que das orientación general, no asesoría jurídica formal, y que no sustituye la revisión de un abogado para el caso concreto.
+- Si la pregunta es sobre un caso específico, litigioso, urgente, o requiere revisar documentos reales de la persona, no intentes resolverlo tú: indica que lo ideal es agendar con el equipo de Evoluciona por WhatsApp.
+- No inventes cifras, fechas, leyes o artículos si no estás seguro. Si dudas, dilo abiertamente y sugiere confirmarlo con el equipo legal antes de actuar.
+- Tema fuera de alcance (derecho penal, otros países, temas personales no empresariales, etc.): dilo con amabilidad y redirige a lo que sí puedes ayudar, o sugiere hablar con el equipo si aplica.
+- Nunca des instrucciones para evadir obligaciones legales o laborales.
+- Si preguntan por precios, servicios puntuales o quieren agendar: invita a escribir por WhatsApp o dejar sus datos, sin inventar tarifas.
+
+Cierra tus respuestas con el recordatorio de orientación general SOLO cuando la respuesta sea sustancial (no en saludos ni mensajes triviales).`;
+
+  const el = (id) => document.getElementById(id);
+  const gate = el('evo-gate');
+  const body = el('evo-body');
+  const chips = el('evo-chips');
+  const inputbar = el('evo-inputbar');
+  const foot = el('evo-foot');
+  const input = el('evo-input');
+  const sendBtn = el('evo-send');
+
+  let history = [];
+  let botTurns = 0;
+  let sending = false;
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function addMsg(role, text){
+    const div = document.createElement('div');
+    div.className = 'evo-msg ' + (role === 'user' ? 'user' : 'bot');
+    div.innerHTML = escapeHtml(text);
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addSystemNote(text){
+    const div = document.createElement('div');
+    div.className = 'evo-msg system-note';
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addWhatsappCta(){
+    const a = document.createElement('a');
+    a.className = 'evo-cta';
+    a.href = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, vengo del chat Evoluciona Express y quiero hablar con un abogado.')}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = '<svg viewBox="0 0 24 24" fill="#25D366"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.1-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg> Hablar con un abogado por WhatsApp';
+    body.appendChild(a);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function showTyping(){
+    const div = document.createElement('div');
+    div.className = 'evo-typing';
+    div.id = 'evo-typing-indicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+  function hideTyping(){
+    const t = el('evo-typing-indicator');
+    if (t) t.remove();
+  }
+
+  function submitLead(payload){
+    if (!CONFIG.FORMSPREE_ENDPOINT.includes('REEMPLAZAR')) {
+      fetch(CONFIG.FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    }
+  }
+
+  function startChat(lead){
+    gate.style.display = 'none';
+    body.style.display = 'flex';
+    chips.style.display = 'flex';
+    inputbar.style.display = 'flex';
+    foot.style.display = 'block';
+
+    const greetName = lead && lead.name ? lead.name.split(' ')[0] : '';
+    addMsg('bot', (greetName ? `¡Hola ${greetName}! ` : '¡Hola! ') + 'Soy EVA, la asistente legal de Evoluciona. Cuéntame tu duda sobre blindaje empresarial, contratos, temas laborales o normativa — con gusto te oriento.');
+
+    if (lead && (lead.name || lead.whatsapp)) {
+      submitLead({
+        origen: 'Evoluciona Express - página web',
+        nombre: lead.name || '',
+        empresa: lead.company || '',
+        whatsapp: lead.whatsapp || '',
+        fecha: new Date().toISOString()
+      });
+    }
+  }
+
+  el('evo-gate-start').addEventListener('click', () => {
+    const name = el('evo-name').value.trim();
+    const company = el('evo-company').value.trim();
+    const whatsapp = el('evo-whatsapp').value.trim();
+    startChat({ name, company, whatsapp });
+  });
+  el('evo-gate-skip').addEventListener('click', () => startChat(null));
+
+  chips.addEventListener('click', (e) => {
+    const btn = e.target.closest('.evo-chip');
+    if (!btn) return;
+    input.value = btn.dataset.q;
+    handleSend();
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+  });
+  sendBtn.addEventListener('click', handleSend);
+
+  async function handleSend(){
+    const text = input.value.trim();
+    if (!text || sending) return;
+    input.value = '';
+    input.style.height = 'auto';
+    addMsg('user', text);
+    history.push({ role: 'user', content: text });
+    sending = true;
+    sendBtn.disabled = true;
+    showTyping();
+
+    try {
+      // Llamamos a NUESTRO endpoint (/api/chat), no directo a Anthropic.
+      // /api/chat vive en el mismo dominio y ahí sí está la API key,
+      // guardada como variable de entorno en Vercel, nunca visible aquí.
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: SYSTEM_PROMPT,
+          messages: history
+        })
+      });
+      const data = await response.json();
+      hideTyping();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error desconocido');
+      }
+
+      const textBlock = (data.content || []).find(b => b.type === 'text');
+      const reply = textBlock ? textBlock.text : 'Se me dificultó procesar eso. ¿Puedes reformular tu pregunta?';
+      addMsg('bot', reply);
+      history.push({ role: 'assistant', content: reply });
+
+      botTurns++;
+      if (botTurns === CONFIG.MAX_TURNS_BEFORE_CTA) {
+        addSystemNote('¿Quieres que un abogado del equipo revise tu caso puntual?');
+        addWhatsappCta();
+      }
+    } catch (err) {
+      hideTyping();
+      addMsg('bot', 'Tuve un problema de conexión. Intenta de nuevo en un momento, o escríbenos directo por WhatsApp.');
+      addWhatsappCta();
+    } finally {
+      sending = false;
+      sendBtn.disabled = false;
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
